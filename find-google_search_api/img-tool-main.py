@@ -3,6 +3,7 @@ import cv2
 import os
 from icrawler.builtin import GoogleImageCrawler
 import numpy as np
+# 25/5 version
 
 google_crawler = GoogleImageCrawler(storage={'root_dir': 'babyimage'})
 google_crawler.crawl(keyword='baby image', max_num=100)
