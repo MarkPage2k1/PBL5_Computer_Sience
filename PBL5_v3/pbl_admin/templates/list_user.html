@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    List User 
+{% endblock title %}
+
+{% block body %}
+    <a class="btn btn-primary" href="logout" role="button">Đăng xuất</a>
+    <table class="table table-striped table-inverse table-responsive">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Tài khoản</th>
+                <th>Hoạt động</th>
+                <th>Thiết bị</th>
+                <th>
+                    <a class="btn btn-primary" href="create_user" role="button">
+                        Thêm tài khoản
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for username, time in zip_user %}
+                    <tr>
+                        <td scope="row">{{username}}</td>
+                        <td>{{time}}</td>
+                        <td><a href="{%url 'list_device_user' username %}">Hiển thị</a></td>
+                        <td>
+                            <a href="{%url 'delete_user_view' username %}">
+                            <button type="button" class="btn btn-danger">Xóa</button></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+    </table>
+{% endblock body %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Xóa tài khoản
+{% endblock title %}
+
+{% block body %}
+    <div style="margin: 20px;">
+        <p>Bạn có chắc chắn xóa tài khoản <span style="color: rgb(54, 92, 219);">{{username}}</span> không?</p>
+        <form method="post">{% csrf_token %}
+            <input type="submit" name="btnDelete" class="btn btn-danger" value="Yes">
+            <a href="/admin">
+                <button type="button" class="btn btn-success">Cancel</button></a>
+            </a>        
+        </form>
+    </div>
+    
+{% endblock body %}

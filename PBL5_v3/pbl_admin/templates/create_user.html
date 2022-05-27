@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Đăng kí tài khoản người dùng
+{% endblock title %}
+
+{% block body %}
+<h1>Đăng kí tài khoản người dùng</h1>
+    <form method="post">{% csrf_token %}
+        <div style="margin: 20px;">
+            Tên đăng nhập
+            <input class="form-control" type="text" name="username" placeholder="Username" />
+        </div>
+        
+        <div style="margin: 20px;">
+            Mật khẩu
+            <input class="form-control" type="text" name="pass" placeholder="Password"/>
+        </div>
+
+        <input class="btn btn-primary" type="submit" value="Tạo tài khoản" style="margin: 20px;">           
+    </form>
+{% endblock body %}

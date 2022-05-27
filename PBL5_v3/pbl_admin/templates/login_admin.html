@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}
+    Login
+{% endblock title %}
+{% block body %}  
+
+    <h1>Login</h1>
+    <form method="post">{% csrf_token %}
+        <div style="margin: 20px;">
+            Email
+            <input class="form-control" type="Email" name="email" placeholder="Email" />
+        </div>
+        
+        <div style="margin: 20px;">
+            Password
+            <input class="form-control" type="Password" name="pass" placeholder="Password"/>
+        </div>
+
+        <input class="btn btn-primary" type="submit" value="Login" style="margin: 20px;">           
+    </form>
+{% endblock body %}

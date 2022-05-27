@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Đổi mật khẩu
+{% endblock title %}
+
+{% block body %}
+    <h2>Đổi mật khẩu</h2>
+    <form method="post" style="margin: 30px; padding: auto;">{% csrf_token %}
+        Nhập mật khẩu cũ
+        <input type="Password" name="old_pass" class="form-control">
+        
+        Nhập mật khẩu mới
+        <input type="text" name="new_pass" class="form-control">
+
+        Xác nhận mật khẩu
+        <input type="text" name="new_pass_confirm" class="form-control">
+
+        <input type="submit" value="Xác nhận" class="btn btn-success">
+    </form>
+{% endblock body %}
