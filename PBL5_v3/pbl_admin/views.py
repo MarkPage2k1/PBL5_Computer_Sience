@@ -17,6 +17,7 @@ config = {
 firebase = pyrebase.initialize_app(config)
 db = firebase.database()
 
+# Login =================================
 def login_admin_view(request):
     email = request.POST.get('email')
     password = request.POST.get('pass')
@@ -39,16 +40,17 @@ def logout_admin_view(request):
         del request.session['check']
     return redirect('/admin')
 
+# =======================================
+
+# Manager User ==========================
 def list_user_view(request):
     if request.session.get('check') == 'True':
         users = db.child('users').get().val()
-        username = []
         time = []
         for i in users:
-            username.append(i)
             time.append(db.child('users').child(i).child('public').child('time').get().val())
         
-        zip_user = zip(username, time)
+        zip_user = zip(users, time)
         return render(request, 'list_user.html', {'zip_user' : zip_user})
     else:
         return redirect('/admin')
@@ -63,38 +65,6 @@ def create_user_view(request):
     
     return redirect('/admin')
 
-def list_device_user_view(request, username):
-    if request.session.get('check') == 'True':
-        devices = db.child('users').child(username).child('public').child('device').get().val()
-        if devices == None:
-            return render(request, 'list_device_user.html', {'check' : False, 'username' : username})
-        else:
-            name_device = []
-            cost_device = []
-            count_device = []
-            sum_device = []
-
-            for i in devices:
-                name_device.append(i)
-                cost = db.child('users').child(username).child('public').child('device').child(i).child('cost').get().val()
-                count = db.child('users').child(username).child('public').child('device').child(i).child('count').get().val()
-                
-                cost_device.append(cost)
-                count_device.append(count)
-                sum_device.append(int(cost)*int(count))
-
-            zip_device = zip(name_device, cost_device, count_device, sum_device)
-            
-            context = {
-                'username' : username,
-                'zip_device' : zip_device,
-                'check' : True,
-                'sum_all' : sum(sum_device),
-            }
-            return render(request, 'list_device_user.html', context)
-
-    return redirect('/admin')
-
 def delete_user_view(request, username):
     if request.session.get('check') == 'True':
         if request.POST.get('btnDelete') == 'Yes':
@@ -106,51 +76,139 @@ def delete_user_view(request, username):
     
     return redirect('/admin')
 
+def list_device_user_view(request, username):
+    if request.session.get('check') == 'True':
+        devices = db.child('users').child(username).child('public').child('device').get().val()
+        if devices == None:
+            return render(request, 'list_device_user.html', {'check' : False, 'username' : username})
+        else:
+            cost_device = []
+            count_device = []
+            sum_device = []
+
+            for i in devices:
+                cost = db.child('users').child(username).child('public').child('device').child(i).child('cost').get().val()
+                count = db.child('users').child(username).child('public').child('device').child(i).child('count').get().val()
+                
+                cost_device.append(cost)
+                count_device.append(count)
+                sum_device.append(int(cost)*int(count))
+
+            zip_device = zip(devices, cost_device, count_device, sum_device)
+            
+            context = {
+                'username' : username,
+                'zip_device' : zip_device,
+                'check' : True,
+                'sum_all' : sum(sum_device),
+            }
+            return render(request, 'list_device_user.html', context)
+
+    return redirect('/admin')
+
 def add_device_user_view(request, username):
+    if request.session.get('check') == 'True':
+        name_devices = db.child('devices').get().val()
+        image_devices = []
+        cost_devices = []
+        total_devices = []
+
+        for i in name_devices:
+            image_devices.append(db.child('devices').child(i).child('image').get().val())
+            cost_devices.append(db.child('devices').child(i).child('cost').get().val())
+            total_devices.append(db.child('devices').child(i).child('total').get().val())
+
+        zip_devices_user = zip(name_devices, image_devices, cost_devices, total_devices)
+        return render(request, 'add_devices_user.html', {'zip_devices_user' : zip_devices_user})
+    
+    return redirect('/admin')
+
+# ========================================
+
+# Manager Devices ========================
+def list_devices_view(request):
+    if request.session.get('check') == 'True':
+        name_devices = db.child('devices').get().val()
+        
+        image_devices = []
+        cost_devices = []
+        total_devices = []
+
+        for i in name_devices:
+            image_devices.append(
+                db.child('devices').child(i).child('image').get().val()
+            )
+
+            cost_devices.append(
+                db.child('devices').child(i).child('cost').get().val()
+            )
+
+            total_devices.append(
+                db.child('devices').child(i).child('total').get().val()
+            )
+
+        zip_devices = zip(name_devices, image_devices, cost_devices, total_devices)
+        return render(request, 'list_devices.html', {'zip_devices' : zip_devices})
+
+    return redirect('/admin')
+
+def add_devices_view(request):
     if request.session.get('check') == 'True':
         form_device = DeviceForm(request.POST or None)
 
         if form_device.is_valid():
             name = request.POST.get('name')
+            image = request.POST.get('image')
             cost = request.POST.get('cost')
-            count = request.POST.get('count')
+            total = request.POST.get('total')
 
-            db.child('users').child(username).child('public').child('device').child(name).set({
+            db.child('devices').child(name).set({
+                'image' : image,
                 'cost' : cost,
-                'count' : count
+                'total' : total,
             })
 
-            return redirect('/admin/' + username + '/devices')
-        return render(request, 'manager_device_user.html', {'form_device' : form_device, 'title' : 'Thêm thiết bị'})
+            return redirect('/admin/devices')
+        return render(request, 'manager_devices.html', {'form_device' : form_device, 'title' : 'Thêm thiết bị'})
     
     return redirect('/admin')
 
-def update_device_user_view(request, username):
+def update_devices_view(request):
     if request.session.get('check') == 'True':
         name = request.POST.get('name')
+        image = request.POST.get('image')
         cost = request.POST.get('cost')
-        count = request.POST.get('count')
+        total = request.POST.get('total')
+        
+        form_device = DeviceForm(
+            request.POST or None, 
+            instance=Device(name, image, cost, total)
+        )
 
-        form_device = DeviceForm(request.POST or None, instance=Device(name, cost, count))
+        if not form_device.is_valid():
+            return redirect('/admin/devices')
 
-        if request.POST.get('btnSave') == 'Save':
-            db.child('users').child(username).child('public').child('device').child(name).update({
+        if request.POST.get('btnSave'):
+            db.child('devices').child(name).update({
+                'image' : image,
                 'cost' : cost,
-                'count' : count
+                'total' : total,
             })
 
-            return redirect('/admin/' + username + '/devices')
+            return redirect('/admin/devices')
 
-        return render(request, 'manager_device_user.html', {'form_device' : form_device, 'title' : 'Cập nhật thiết bị'})
+        return render(request, 'manager_devices.html', {'form_device' : form_device, 'title' : 'Cập nhật thiết bị'})
     
     return redirect('/admin')
 
-def delete_device_user_view(request, username):
+def delete_devices_view(request):
     if request.session.get('check') == 'True':
-        name = request.POST.get('hdNameDevice')
+        name = request.POST.get('name')
 
-        db.child('users').child(username).child('public').child('device').child(name).remove()
+        db.child('devices').child(name).remove()
 
-        return redirect('/admin/' + username + '/devices')
+        return redirect('/admin/devices')
     
     return redirect('/admin')
+
+# ======================================

@@ -60,4 +60,12 @@ def change_pass_view(request):
                 
         return render(request, 'change_pass.html')
 
-    return redirect('/')        
+    return redirect('/')      
+
+def control_view(request):
+    username = request.session.get('client')
+    if username:
+        status ,speedCradle, speedFan = db.child('users').child(username).child('control').get().val()
+        print(status)
+        return render(request, 'control.html')
+    return redirect('/')

@@ -1,0 +1,10 @@
+{% block title %}
+    Điều khiển thiết bị
+{% endblock title %}
+
+{% block body %}
+    <form method="POST">{% csrf_token %}
+        <input type="range" name="rangeSpeedCradle" value="0" max="3">
+        <input type="range" name="rangeSpeedFan" value="0" max="100">
+    </form>
+{% endblock body %}

@@ -7,8 +7,9 @@ class DeviceForm(forms.ModelForm):
         model = Device
         fields = [
             'name',
+            'image',
             'cost',
-            'count',
+            'total',
             ]
 
     name = forms.CharField(
@@ -18,6 +19,15 @@ class DeviceForm(forms.ModelForm):
             attrs={
                 'class' : 'form-control',
                 'placehoder' : 'Name'
+            }
+        )
+    )
+
+    image = forms.CharField(
+        label='Image',
+        widget=forms.TextInput(
+            attrs={
+                'class' : 'form-control',
             }
         )
     )
@@ -32,8 +42,8 @@ class DeviceForm(forms.ModelForm):
         )
     )
 
-    count = forms.IntegerField(
-        label='Count',
+    total = forms.IntegerField(
+        label='Total',
         initial=0,
         widget=forms.NumberInput(
             attrs={
@@ -42,9 +52,9 @@ class DeviceForm(forms.ModelForm):
         )
     )
     
-    # Đa năng hóa lại contrustor
-    def __init__(self, *args, **kwargs):
-        super(DeviceForm, self).__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
-        if instance:
+    def clean_name(self, *args, **kwargs):
+        name = self.cleaned_data.get('name')
+        if name:
             self.fields['name'].widget.attrs['readonly'] = True
+            return name
+        return None

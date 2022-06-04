@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Danh sách thiết bị
+{% endblock title %}
+
+{% block body %}
+    <h1>Danh sách thiết bị</h1>
+    <table class="table table-striped table-inverse table-responsive">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Tên thiết bị</th>
+                <th>Hình ảnh</th>
+                <th>Đơn giá</th>
+                <th>Số lượng trong kho</th>
+                <th>
+                    <a href="/admin/devices/add">
+                        <button type="button" class="btn btn-danger">Thêm thiết bị</button></a>
+                </th>
+            </tr>
+        </thead>
+            <tbody>
+                {% for name, image, cost, total in zip_devices %}
+                    <tr>
+                        <td scope="row">{{name}}</td>
+                        <td>{{image}}</td>
+                        <td>{{cost}}</td>
+                        <td>{{total}}</td>
+                        <td>
+                            <form action="{%url 'update_devices_view'%}" method="POST">{% csrf_token %}
+                                <input type="hidden" name="name" value="{{name}}">
+                                <input type="hidden" name="image" value="{{image}}">
+                                <input type="hidden" name="cost" value="{{cost}}">
+                                <input type="hidden" name="total" value="{{total}}">
+                                <input type="submit" value="Cập nhật">
+                            </form>
+                            <form action="{%url 'delete_devices_view'%}" method="POST">{% csrf_token %}
+                                <input type="hidden" name="name" value="{{name}}">
+                                <input type="submit" value="Xóa">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+    </table>
+{% endblock body %}

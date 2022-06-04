@@ -6,7 +6,7 @@
 
 {% block body %}
     <div style="margin: 20px;">
-        <p>Bạn có chắc chắn xóa tài khoản <span style="color: rgb(54, 92, 219);">{{username}}</span> không?</p>
+        <p>Bạn có chắc chắn xóa tài khoản <span style="color: rgb(54, 92, 219);"><strong>{{username}}</strong></span> không?</p>
         <form method="post">{% csrf_token %}
             <input type="submit" name="btnDelete" class="btn btn-danger" value="Yes">
             <a href="/admin">

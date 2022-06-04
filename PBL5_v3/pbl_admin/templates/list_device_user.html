@@ -26,20 +26,6 @@
                         <td>{{cost}}</td>
                         <td>{{count}}</td>
                         <td>{{sum}}</td>
-                        <td>
-                            <form action="/admin/{{username}}/devices/delete" method="post">{% csrf_token %}
-                                <input type="hidden" name="hdNameDevice" value="{{name}}">
-                                <input type="submit" class="btn btn-danger" value="Xoá">
-                            </form>
-
-                            <form action="devices/update" method="post">{% csrf_token %}
-                                <input type="hidden" name="name" value="{{name}}">
-                                <input type="hidden" name="cost" value="{{cost}}">
-                                <input type="hidden" name="count" value="{{count}}">
-                                <input type="submit" class="btn btn-danger" value="Cập nhật">
-                                <!-- /admin/{{username}}/devices/update -->
-                            </form>
-                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
