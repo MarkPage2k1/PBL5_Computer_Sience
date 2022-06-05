@@ -8,15 +8,24 @@
 <h1>Đăng kí tài khoản người dùng</h1>
     <form method="post">{% csrf_token %}
         <div style="margin: 20px;">
+            Họ và tên
+            <input class="form-control" type="text" name="fullname" required/>
+        </div>
+        
+        <div style="margin: 20px;">
             Tên đăng nhập
-            <input class="form-control" type="text" name="username" placeholder="Username" />
+            <input class="form-control" type="text" name="username" 
+                pattern="^[a-zA-Z0-9_]+$" 
+                placeholder="Chỉ gồm chữ số chữ cái không dấu" required/>
         </div>
         
         <div style="margin: 20px;">
             Mật khẩu
-            <input class="form-control" type="text" name="pass" placeholder="Password"/>
+            <input class="form-control" type="password" 
+                name="pass" pattern="^[0-9]{4,8}$" 
+                placeholder="Nhập mật khẩu từ 4 đến 8 chữ số" required/>
         </div>
 
-        <input class="btn btn-primary" type="submit" value="Tạo tài khoản" style="margin: 20px;">           
+        <input class="btn btn-primary" name="submit" type="submit" value="Tạo tài khoản" style="margin: 20px;">           
     </form>
 {% endblock body %}

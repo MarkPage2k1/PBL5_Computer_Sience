@@ -10,7 +10,7 @@ urlpatterns = [
     
     # Manager user
     path('create_user', create_user_view, name='create_user'),
-    path('<username>/devices', list_device_user_view, name='list_device_user'),
+    path('<username>/history', list_device_user_view, name='list_device_user'),
     path('<username>/delete', delete_user_view, name='delete_user_view'),
     path('<username>/devices/add', add_device_user_view, name='add_device_user_view'),
     

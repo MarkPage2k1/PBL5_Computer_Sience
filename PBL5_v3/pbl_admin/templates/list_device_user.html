@@ -5,6 +5,7 @@
 {% endblock title %}
 
 {% block body %}
+    <h1>Lịch sử mua hàng</h1>
     <table class="table table-striped table-inverse table-responsive">
         <thead class="thead-inverse">
             <tr>
@@ -12,20 +13,18 @@
                 <th>Đơn giá</th>
                 <th>Số lượng</th>
                 <th>Thành tiền</th>
-                <th>
-                    <a href="/admin/{{username}}/devices/add">
-                        <button type="button" class="btn btn-danger">Thêm thiết bị</button></a>
-                </th>
+                <th>Ngày mua</th>
             </tr>
         </thead>
         {% if check %}
             <tbody>
-                {% for name, cost, count, sum in zip_device %}
+                {% for name, cost, count, sum, date in zip_device %}
                     <tr>
                         <td scope="row">{{name}}</td>
                         <td>{{cost}}</td>
                         <td>{{count}}</td>
                         <td>{{sum}}</td>
+                        <td>{{date}}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -36,5 +35,9 @@
     {% if sum_all %}
         <p>Tổng tiển {{sum_all}}</p>
     {% endif %}
+
+    <a href="{%url 'add_device_user_view' username%}">
+        <button type="button" class="btn btn-danger">Mua thiết bị</button>
+    </a>
 {% endblock body %}
 

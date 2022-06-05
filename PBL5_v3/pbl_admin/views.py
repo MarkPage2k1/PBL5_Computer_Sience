@@ -1,3 +1,4 @@
+from datetime import datetime as dtime
 from django.shortcuts import redirect, render
 import pyrebase
 
@@ -42,113 +43,33 @@ def logout_admin_view(request):
 
 # =======================================
 
-# Manager User ==========================
-def list_user_view(request):
-    if request.session.get('check') == 'True':
-        users = db.child('users').get().val()
-        time = []
-        for i in users:
-            time.append(db.child('users').child(i).child('public').child('time').get().val())
-        
-        zip_user = zip(users, time)
-        return render(request, 'list_user.html', {'zip_user' : zip_user})
-    else:
-        return redirect('/admin')
-
-def create_user_view(request):
-    if request.session.get('check') == 'True':
-        username = request.POST.get('username')
-        password = request.POST.get('pass')
-        if username == None or password == None:
-            return render(request, 'create_user.html')
-        db.child('users').child(username).set({'password': password})
-    
-    return redirect('/admin')
-
-def delete_user_view(request, username):
-    if request.session.get('check') == 'True':
-        if request.POST.get('btnDelete') == 'Yes':
-            db.child('users').child(username).remove()
-
-            return redirect('/admin')
-            
-        return render(request, 'delete_user.html', {'username' : username})
-    
-    return redirect('/admin')
-
-def list_device_user_view(request, username):
-    if request.session.get('check') == 'True':
-        devices = db.child('users').child(username).child('public').child('device').get().val()
-        if devices == None:
-            return render(request, 'list_device_user.html', {'check' : False, 'username' : username})
-        else:
-            cost_device = []
-            count_device = []
-            sum_device = []
-
-            for i in devices:
-                cost = db.child('users').child(username).child('public').child('device').child(i).child('cost').get().val()
-                count = db.child('users').child(username).child('public').child('device').child(i).child('count').get().val()
-                
-                cost_device.append(cost)
-                count_device.append(count)
-                sum_device.append(int(cost)*int(count))
-
-            zip_device = zip(devices, cost_device, count_device, sum_device)
-            
-            context = {
-                'username' : username,
-                'zip_device' : zip_device,
-                'check' : True,
-                'sum_all' : sum(sum_device),
-            }
-            return render(request, 'list_device_user.html', context)
-
-    return redirect('/admin')
-
-def add_device_user_view(request, username):
-    if request.session.get('check') == 'True':
-        name_devices = db.child('devices').get().val()
-        image_devices = []
-        cost_devices = []
-        total_devices = []
-
-        for i in name_devices:
-            image_devices.append(db.child('devices').child(i).child('image').get().val())
-            cost_devices.append(db.child('devices').child(i).child('cost').get().val())
-            total_devices.append(db.child('devices').child(i).child('total').get().val())
-
-        zip_devices_user = zip(name_devices, image_devices, cost_devices, total_devices)
-        return render(request, 'add_devices_user.html', {'zip_devices_user' : zip_devices_user})
-    
-    return redirect('/admin')
-
-# ========================================
-
 # Manager Devices ========================
+
+def listDevices():
+    name_devices = db.child('devices').get().val()
+        
+    image_devices = []
+    cost_devices = []
+    total_devices = []
+
+    for i in name_devices:
+        image_devices.append(
+            db.child('devices').child(i).child('image').get().val()
+        )
+
+        cost_devices.append(
+            db.child('devices').child(i).child('cost').get().val()
+        )
+
+        total_devices.append(
+            db.child('devices').child(i).child('total').get().val()
+        )
+
+    return zip(name_devices, image_devices, cost_devices, total_devices)
+
 def list_devices_view(request):
     if request.session.get('check') == 'True':
-        name_devices = db.child('devices').get().val()
-        
-        image_devices = []
-        cost_devices = []
-        total_devices = []
-
-        for i in name_devices:
-            image_devices.append(
-                db.child('devices').child(i).child('image').get().val()
-            )
-
-            cost_devices.append(
-                db.child('devices').child(i).child('cost').get().val()
-            )
-
-            total_devices.append(
-                db.child('devices').child(i).child('total').get().val()
-            )
-
-        zip_devices = zip(name_devices, image_devices, cost_devices, total_devices)
-        return render(request, 'list_devices.html', {'zip_devices' : zip_devices})
+        return render(request, 'list_devices.html', {'zip_devices' : listDevices})
 
     return redirect('/admin')
 
@@ -212,3 +133,117 @@ def delete_devices_view(request):
     return redirect('/admin')
 
 # ======================================
+
+# Manager User ==========================
+def list_user_view(request):
+    if request.session.get('check') == 'True':
+        users = db.child('users').get().val()
+        fullnames = []
+        for i in users:
+            fullnames.append(db.child('users').child(i).child('fullname').get().val())
+        
+        zip_user = zip(fullnames, users)
+        return render(request, 'list_user.html', {'zip_user' : zip_user})
+    else:
+        return redirect('/admin')
+
+def create_user_view(request):
+    if request.session.get('check') == 'True':
+        fullname = request.POST.get('fullname')
+        username = request.POST.get('username')
+        password = request.POST.get('pass')
+
+        if username == None or password == None:
+            return render(request, 'create_user.html')
+        db.child('users').child(username).set({
+            'password': password,
+            'fullname' : fullname
+            })
+    
+    return redirect('/admin')
+
+def delete_user_view(request, username):
+    if request.session.get('check') == 'True':
+        if request.POST.get('btnDelete') == 'Yes':
+            db.child('users').child(username).remove()
+
+            return redirect('/admin')
+            
+        return render(request, 'delete_user.html', {'username' : username})
+    
+    return redirect('/admin')
+
+def list_device_user_view(request, username):
+    if request.session.get('check') == 'True':
+        id = db.child('users').child(username).child('history').get().val()
+        if id == None:
+            return render(request, 'list_device_user.html', {'check' : False, 'username' : username})
+        else:
+            name_device = []
+            cost_device = []
+            count_device = []
+            sum_device = []
+            date_device = []
+
+            for i in id:
+                names = db.child('users').child(username).child('history').child(i).get().val()
+                for j in names:
+                    cost = db.child('users').child(username).child('history').child(i).child(j).child('cost').get().val()
+                    count = db.child('users').child(username).child('history').child(i).child(j).child('count').get().val()
+                    date = db.child('users').child(username).child('history').child(i).child(j).child('date').get().val()
+                
+                    name_device.append(j)
+                    cost_device.append(cost)
+                    count_device.append(count)
+                    date_device.append(date)
+                    sum_device.append(int(cost)*int(count))
+
+            zip_device = zip(name_device, cost_device, count_device, sum_device, date_device)
+            
+            context = {
+                'username' : username,
+                'zip_device' : zip_device,
+                'check' : True,
+                'sum_all' : sum(sum_device),
+            }
+            return render(request, 'list_device_user.html', context)
+
+    return redirect('/admin')
+
+def getDevicesByName(name):
+    cost = db.child('devices').child(name).child('cost').get().val()
+    total = db.child('devices').child(name).child('total').get().val()
+
+    return cost, total
+
+def add_device_user_view(request, username):
+    if request.session.get('check') == 'True':
+        products = request.POST.getlist('comfirm[]')
+        counts = request.POST.getlist('count[]')
+
+        if products != []:
+            setIdDevices = dtime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            for i, j in zip(products, counts):
+                
+                cost, total = getDevicesByName(i)
+
+                db.child('users').child(username).child('history').child(setIdDevices).child(i).set({
+                    'cost' : cost,
+                    'count' : j,
+                    'date' : dtime.now().strftime("%d/%m/%Y")
+                })
+
+                db.child('devices').child(i).update({
+                    'total' : str(int(total) - int(j)),
+                })
+
+            return redirect('/admin/' + username + '/history')
+
+        zip_devices_user = listDevices()
+
+        return render(request, 'add_devices_user.html', {'zip_devices_user' : zip_devices_user})
+    
+    return redirect('/admin')
+
+# ========================================
+
