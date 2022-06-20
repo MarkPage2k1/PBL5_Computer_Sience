@@ -7,6 +7,26 @@
 {% block body %}
 <form method ='POST'>{% csrf_token %}
     {{form_device.as_p}}
+    <input type="hidden" id="base64Image" name="base64Image" value="{{base64_image | default:None}}">
     <input type="submit" name="btnSave" value="Save">
+    <img src="{{base64_image | default:None}}" alt="Hình ảnh sản phẩm" height="300px" width="300px" id="imageProduct">
 </form>
+
+<script>
+    function readFile() {
+  
+        if (!this.files || !this.files[0]) return
+    
+        const FR = new FileReader()
+            
+        FR.addEventListener("load", function(evt) {
+           document.getElementById('base64Image').value = evt.target.result
+           document.getElementById('imageProduct').src = evt.target.result
+        }); 
+            
+        FR.readAsDataURL(this.files[0])
+}
+
+document.getElementsByName('image')[0].addEventListener("change", readFile)
+</script>
 {% endblock body %}

@@ -7,9 +7,10 @@
 {% block body %}
     <h1>Quản lý thông tin</h1>
     <ul>
-        <li>Nhiệt độ : {{temp}}</li>
-        <li>Độ ẩm : {{hum}}</li>
-        <li><img src="{{image_encode}}" alt="image_kid" style="width: 50%; height: 50%;"></li>
+        <li>Nhiệt độ : {{temp | default:None}}</li>
+        <li>Độ ẩm : {{hum | default:None}}</li>
+        <li>Trạng thái : {{emoji | default:None}}</li>
+        <li><img src="{{image_encode | default:None}}" alt="Hình ảnh" style="width: 50%; height: 50%;"></li>
     </ul>  
     <a class="btn btn-primary" href="/logout" role="button">Đăng xuất</a>
     <a class="btn btn-primary" href="/changepass" role="button">Đổi mật khẩu</a>

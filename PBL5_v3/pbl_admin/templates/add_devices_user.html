@@ -21,12 +21,12 @@
                     {% for name, image, cost, total in zip_devices_user %}
                         <tr>
                             <td scope="row">{{name}}</td>
-                            <td>{{image}}</td>
+                            <td><img src="{{image}}" alt="Hình ảnh sản phẩm" height="70px" width="70px"></td>
                             <td>{{cost}}</td>
                             <td>
                                 <input type="number" name="count[]" min="1" max="{{total}}" style="width: 2cm;">
                             </td>
-                            <td><input type="checkbox" name="comfirm[]" id="comfirm" value="{{name}}" onclick="getComfirm()"></td>
+                            <td><input type="checkbox" name="confirm[]" id="confirm" value="{{name}}" onclick="getConfirm()"></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -40,7 +40,7 @@
     </form>
 
     <script>
-        var arrChecked = document.getElementsByName('comfirm[]');
+        var arrChecked = document.getElementsByName('confirm[]');
         var tableDevices = document.getElementById('table_devices');
         var countDevices = document.getElementsByName('count[]'); 
         
@@ -48,7 +48,7 @@
                 countDevices[i].disabled = true;
         }
         
-        function getComfirm() {
+        function getConfirm() {
             for(var i = 0; i < arrChecked.length; i++) {
                 countDevices[i].disabled = true;
                 if(arrChecked[i].checked) {

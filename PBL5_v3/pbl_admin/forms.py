@@ -14,7 +14,6 @@ class DeviceForm(forms.ModelForm):
 
     name = forms.CharField(
         label='Name',
-        required=False,
         widget=forms.TextInput(
             attrs={
                 'class' : 'form-control',
@@ -23,13 +22,9 @@ class DeviceForm(forms.ModelForm):
         )
     )
 
-    image = forms.CharField(
+    image = forms.ImageField(
+        required=False,
         label='Image',
-        widget=forms.TextInput(
-            attrs={
-                'class' : 'form-control',
-            }
-        )
     )
 
     cost = forms.IntegerField(

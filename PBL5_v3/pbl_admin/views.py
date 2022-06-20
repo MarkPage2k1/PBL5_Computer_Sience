@@ -1,5 +1,5 @@
 from datetime import datetime as dtime
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 import pyrebase
 
 from pbl_admin.models import Device
@@ -79,9 +79,9 @@ def add_devices_view(request):
 
         if form_device.is_valid():
             name = request.POST.get('name')
-            image = request.POST.get('image')
             cost = request.POST.get('cost')
             total = request.POST.get('total')
+            image = request.POST.get('base64Image')
 
             db.child('devices').child(name).set({
                 'image' : image,
@@ -97,19 +97,23 @@ def add_devices_view(request):
 def update_devices_view(request):
     if request.session.get('check') == 'True':
         name = request.POST.get('name')
-        image = request.POST.get('image')
         cost = request.POST.get('cost')
         total = request.POST.get('total')
-        
+
+        image = db.child('devices').child(name).child('image').get().val()
+
         form_device = DeviceForm(
             request.POST or None, 
             instance=Device(name, image, cost, total)
         )
 
-        if not form_device.is_valid():
+        if not form_device.is_valid:
             return redirect('/admin/devices')
 
         if request.POST.get('btnSave'):
+            image = request.POST.get('base64Image')
+            cost = request.POST.get('cost')
+            total = request.POST.get('total')
             db.child('devices').child(name).update({
                 'image' : image,
                 'cost' : cost,
@@ -118,7 +122,13 @@ def update_devices_view(request):
 
             return redirect('/admin/devices')
 
-        return render(request, 'manager_devices.html', {'form_device' : form_device, 'title' : 'Cập nhật thiết bị'})
+        context = {
+            'form_device' : form_device,
+            'base64_image' : image,
+            'title' : 'Cập nhật thiết bị',
+            }
+
+        return render(request, 'manager_devices.html', context)
     
     return redirect('/admin')
 
@@ -218,7 +228,7 @@ def getDevicesByName(name):
 
 def add_device_user_view(request, username):
     if request.session.get('check') == 'True':
-        products = request.POST.getlist('comfirm[]')
+        products = request.POST.getlist('confirm[]')
         counts = request.POST.getlist('count[]')
 
         if products != []:
