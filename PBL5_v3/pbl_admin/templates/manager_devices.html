@@ -1,16 +1,47 @@
-{% extends 'base.html' %}
+{% extends 'base_with_navbar_admin.html' %}
+{% load static %}
 
 {% block title %}
     {{title}}
 {% endblock title %}
 
+{% block style %}
+    <style>
+        .image {
+            width: 500px;
+            float: left;
+            margin: 30px;
+            padding-left: 70px;
+        }
+
+        .input {
+            width: 500px;
+            float: left;
+            margin: 30px;
+        }
+        .btn {
+            width: 100px;
+            text-align: center;
+        }
+    </style>
+    
+{% endblock style %}
+
 {% block body %}
-<form method ='POST'>{% csrf_token %}
-    {{form_device.as_p}}
-    <input type="hidden" id="base64Image" name="base64Image" value="{{base64_image | default:None}}">
-    <input type="submit" name="btnSave" value="Save">
+
+<div class="image">
     <img src="{{base64_image | default:None}}" alt="Hình ảnh sản phẩm" height="300px" width="300px" id="imageProduct">
-</form>
+</div>
+
+<div class="input">
+    <h2>{{title}}</h2>
+    <form method ='POST'>{% csrf_token %}
+        {{form_device.as_p}}
+        <input type="hidden" id="base64Image" name="base64Image" value="{{base64_image | default:None}}">
+        <input type="submit" name="btnSave" value="Lưu" class="btn btn-success">
+        
+    </form>
+</div>
 
 <script>
     function readFile() {

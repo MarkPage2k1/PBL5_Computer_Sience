@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_with_navbar_admin.html' %}
 
 {% block title %}
     Danh sách thiết bị
@@ -15,7 +15,7 @@
                 <th>Số lượng trong kho</th>
                 <th>
                     <a href="/admin/devices/add">
-                        <button type="button" class="btn btn-danger">Thêm thiết bị</button></a>
+                        <button type="button" class="btn btn-primary">Thêm thiết bị</button></a>
                 </th>
             </tr>
         </thead>
@@ -23,7 +23,7 @@
                 {% for name, image, cost, total in zip_devices %}
                     <tr>
                         <td scope="row">{{name}}</td>
-                        <td><img src="{{image}}" alt="Hình ảnh sản phẩm" height="70px" width="70px"></td>
+                        <td><img src="{{image}}" alt="Hình ảnh sản phẩm" height="90px" width="90px"></td>
                         <td>{{cost}}</td>
                         <td>{{total}}</td>
                         <td>
@@ -32,11 +32,12 @@
                                 <input type="hidden" name="image" value="{{image}}">
                                 <input type="hidden" name="cost" value="{{cost}}">
                                 <input type="hidden" name="total" value="{{total}}">
-                                <input type="submit" value="Cập nhật">
+                                <input type="submit" value="Cập nhật" class="btn btn-success" style="width: 100px; margin-bottom: 7px;">
                             </form>
+
                             <form action="{%url 'delete_devices_view'%}" method="POST">{% csrf_token %}
                                 <input type="hidden" name="name" value="{{name}}">
-                                <input type="submit" value="Xóa">
+                                <input type="submit" value="Xóa" class="btn btn-danger" style="width: 100px;">
                             </form>
                         </td>
                     </tr>

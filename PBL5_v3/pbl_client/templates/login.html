@@ -1,21 +1,47 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}
     Đăng nhập
 {% endblock title %}
-{% block body %}
-    <h1>Đăng nhập</h1>
-    <form method="post">{% csrf_token %}
-        <div style="margin: 20px;">
-            Tên đăng nhập
-            <input class="form-control" type="text" name="username" placeholder="Username" />
-        </div>
-        
-        <div style="margin: 20px;">
-            Mật khẩu
-            <input class="form-control" type="Password" name="pass" placeholder="Password"/>
-        </div>
+    
+    
+{%block style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'style_login.css' %}">
+{%endblock style %}
 
-        <input class="btn btn-primary" type="submit" value="Login" style="margin: 20px;">           
-    </form>
+{% block body %}
+    <div class="container">
+        <div class="forms-container">
+            <div class="signin-signup">
+                <form method="post" class="sign-in-form">{% csrf_token %}
+                    <h1 class="title">Đăng nhập</h1>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="username" placeholder="Username" />
+                    </div>
+                    
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="Password" name="pass" placeholder="Password"/>
+                    </div>
+
+                    <input class="btn solid" type="submit" value="Login">           
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="panels-container">
+        <div class="panel left-panel">
+          <div class="content">
+            <h3>PBL5 - COMPUTER SIENCE</h3>
+            <p>
+              Ứng dụng theo dõi nôi trẻ em thông minh
+            </p>
+          </div>
+          <img src="https://raw.githubusercontent.com/sefyudem/Sliding-Sign-In-Sign-Up-Form/955c6482aeeb2f0e77c1f3c66354da3bc4d7a72d/img/log.svg" class="image" alt=""/>
+        </div>
+      </div>
+    </div>
 
 {% endblock body %}

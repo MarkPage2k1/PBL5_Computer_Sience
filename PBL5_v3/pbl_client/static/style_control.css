@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    background: rgb(255, 255, 255);
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+  }
+  h1 {
+      color: black;
+  }
+  h2 {
+    font-size: 45px;
+    font-weight: 300;
+    margin: 10px;
+  }
+  
+  h2 span {
+    font-size: 30px;
+  }
+  
+  p {
+    font-size: 20px;
+  }
+  
+  .container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+  }
+  
+  .container > div {
+      cursor: pointer;
+      height: 550px;
+      width: 550px;
+      background-size: cover;
+      background-attachment: fixed;
+  
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+  }
+  
+  .container > div:nth-of-type(1) {
+    grid-column: 1 / 1;
+  }
+  
+  .main {
+      margin-top: 20px;
+  }
+  
+  .bg1 {
+    background: url('https://i.ibb.co/dBLbrRV/bg1.jpg');
+  }

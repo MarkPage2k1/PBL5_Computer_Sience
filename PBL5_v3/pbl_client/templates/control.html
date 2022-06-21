@@ -1,107 +1,56 @@
-{% extends 'base.html' %}
+{% extends 'base_with_navbar_client.html' %}
+{% load static %}
 
 {% block title %}
     Điều khiển thiết bị
 {% endblock title %}
 
 {% block style %}
-<style>
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 34px;
-    }
-    
-    .switch input { 
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      -webkit-transition: .4s;
-      transition: .4s;
-    }
-    
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 26px;
-      width: 26px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      -webkit-transition: .4s;
-      transition: .4s;
-    }
-    
-    input:checked + .slider {
-      background-color: #2196F3;
-    }
-    
-    input:focus + .slider {
-      box-shadow: 0 0 1px #2196F3;
-    }
-    
-    input:checked + .slider:before {
-      -webkit-transform: translateX(26px);
-      -ms-transform: translateX(26px);
-      transform: translateX(26px);
-    }
-    
-    /* Rounded sliders */
-    .slider.round {
-      border-radius: 34px;
-    }
-    
-    .slider.round:before {
-      border-radius: 50%;
-    }
-    </style>
+  <link rel="stylesheet" type="text/css" href="{% static 'style_control.css' %}">
 {% endblock style %}
 
 
 {% block body %}
-    <form method="POST">{% csrf_token %}
-        Tự động
-        <label class="switch">
-          	<input type="checkbox" name="Auto" id="Auto" onchange="switchAuto()">
-          	<span class="slider round"></span>
-      	</label>
-      	<br/><br/>
-      	<div id="manual">
-        	Lắc Nôi
-        	<label class="switch">
-				<input type="checkbox" name="cbCradle" id="cbCradle">
-				<span class="slider round"></span>
-			</label>
-			<br/><br/>
+	<form method="POST">{% csrf_token %}
+		<div class="main">
+			<div class="container">
+				<div class="bg1">
+					
+					<label class="switch">	
+						<input type="checkbox" name="Auto" id="Auto" onchange="switchAuto()">
+						<span class="slider round"></span>
+					</label>
+					<p>Tự động</p>
+					<div id="manual">
+						<label class="switch">
+							<input type="checkbox" name="cbCradle" id="cbCradle">
+							<span class="slider round"></span>
+						</label>
+						<p>Nôi</p>
 
-			Quạt
-			<label class="switch">
-				<input type="checkbox" name="cbFan" id="cbFan">
-				<span class="slider round"></span>
-			</label>
-			<br/><br/>
+						<label class="switch">
+							<input type="checkbox" name="cbFan" id="cbFan">
+							<span class="slider round"></span>
+						</label>
+						<p>Quạt</p>
+					</div>
+
+					<input class="btn btn-success" type="submit" value="Lưu" name="Save">
+				</div>
+
+				<div class="bg1">
+					<p>Chế độ tự động</p>
+					<h2>{{auto | default:None}}</h2>
+					
+					<p>Trạng thái nôi</p>
+					<h2>{{statusCradle | default:None}}</h2>
+					
+					<p>Trạng thái quạt</p>
+					<h2>{{statusFan | default:None}}</h2>
+				</div>
+			</div>
 		</div>
-
-		<div id="info">
-			<p>Chế độ tự động : {{auto | default:None}}</p>
-			<p>Trạng thái nôi : {{statusCradle | default:None}}</p>
-			<p>Trạng thái quạt : {{statusFan | default:None}}</p>
-		</div>
-
-        <input type="submit" value="Lưu" name="Save">
-        
-    </form>
+	</form>
 
     <script>
         cbAuto = document.getElementById('Auto')

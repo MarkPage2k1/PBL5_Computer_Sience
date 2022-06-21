@@ -1,8 +1,24 @@
-{% extends 'base.html' %}
+{% extends 'base_with_navbar_admin.html' %}
 
 {% block title %}
     Mua thiết bị
 {% endblock title %}
+
+{% block style %}
+    <style>
+        .bill, .get-cost{
+            float: left;
+            margin: 10px;
+            margin-left: 100px;
+        }
+
+        .submit {
+            float: right;
+            margin: 10px;
+            margin-right: 100px;
+        }
+    </style>
+{% endblock style %}
 
 {% block body %}
     <h1> Mua thiết bị </h1>   
@@ -31,12 +47,18 @@
                     {% endfor %}
                 </tbody>
         </table>
-
-        <input type="button" value="Tổng tiền" onclick="getBill()" class="btn btn-primary">
-        <input type="text" id="sum" readonly placeholder="Tổng tiền" class="form-control" style="width: 5cm;">
+        <div>
+            <div class="bill">
+                <input type="button" value="Tổng tiền" onclick="getBill()" class="btn btn-primary">
+            </div>
+            <div class="get-cost">
+                <input type="text" id="sum" readonly placeholder="Tổng tiền" class="form-control" style="width: 10cm;">
+            </div>
+            <div class="submit">
+                <input type="submit" value="Thanh toán" class="btn btn-primary">
+            </div>
+        </div>
         
-        <input type="submit" value="Thanh toán" class="btn btn-primary">
-
     </form>
 
     <script>
@@ -66,7 +88,14 @@
                     sum += cost*count;
                 }
             }
-            document.getElementById('sum').value = sum;
+
+            if(sum > 0) {
+                document.getElementById('sum').value = sum;
+            } else {
+                document.getElementById('sum').value = 'Số lượng mua không hợp lệ';
+            }
+
+            
         }
     </script>
 {% endblock body %}

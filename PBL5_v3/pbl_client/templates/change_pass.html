@@ -1,21 +1,30 @@
-{% extends 'base.html' %}
+{% extends 'base_with_navbar_client.html' %}
+{% load static %}
 
 {% block title %}
     Đổi mật khẩu
-{% endblock title %}
+{%endblock title %}
+
+{% block style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'style_changepass.css' %}">
+{% endblock style %}
 
 {% block body %}
     <h2>Đổi mật khẩu</h2>
     <form method="post" style="margin: 30px; padding: auto;">{% csrf_token %}
-        Nhập mật khẩu cũ
+        <p>Nhập mật khẩu cũ</p>
         <input type="Password" name="old_pass" class="form-control">
-        
-        Nhập mật khẩu mới
-        <input type="text" name="new_pass" class="form-control">
+        <br><br>
 
-        Xác nhận mật khẩu
+        <p>Nhập mật khẩu mới</p>
+        <input type="text" name="new_pass" class="form-control">
+        <br><br>
+
+        <p>Xác nhận mật khẩu</p>
         <input type="text" name="new_pass_confirm" class="form-control">
+        <br><br>
 
         <input type="submit" value="Xác nhận" class="btn btn-success">
+        <br><br>
     </form>
 {% endblock body %}

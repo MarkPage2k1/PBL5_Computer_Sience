@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block body %}
+    <form method="post">{% csrf_token %}
+        <input type="text" name="emailLogin" placeholder="Input your email"><br>
+        <input type="password" name="passLogin" placeholder="Input my password">
+        <input type="submit" value="Login">
+    </form>
+    <p>{{mess}}</p>
+    <a href="./reghister"><button>Reghister</button></a>
+{% endblock body %}

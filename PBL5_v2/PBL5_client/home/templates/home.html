@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Home
+{% endblock title %}
+
+{% block body %}
+    <ul>
+        <li>Nhiệt độ : {{temp}}</li>
+        <li>Độ ẩm : {{hum}}</li>
+        <li><img src="{{image_encode}}" alt="image_kid" srcset=""></li>
+    </ul>  
+    
+{% endblock body %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block body %}
+    <form method="post">{% csrf_token %}
+        <input type="email" name="emailReghister" placeholder="Input email to reghister">
+        <input type="password" name="passReghister" placeholder="Input password to reghister">
+        <input type="password" name="passConfirm" placeholder="Input password again to confirm">
+        <input type="submit" value="Reghister">
+    </form>
+    <p>{{mess}}</p>
+{% endblock body %}
