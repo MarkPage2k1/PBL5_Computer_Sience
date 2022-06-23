@@ -1,3 +1,0 @@
-0 cry
-1 happy
-2 sleep
