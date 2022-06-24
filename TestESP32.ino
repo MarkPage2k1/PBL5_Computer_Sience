@@ -16,39 +16,35 @@
 #include <addons/RTDBHelper.h>
 
 /* 1. Nhập tên và mật khẩu wifi mà ESP32_Cam sẽ kết nối đến*/
-#define WIFI_SSID "T & H"
-#define WIFI_PASSWORD "1.2.3.4."
-
-//For the following credentials, see examples/Authentications/SignInAsUser/EmailPassword/EmailPassword.ino
+#define WIFI_SSID " "
+#define WIFI_PASSWORD " "
 
 /* 2. Nhập API Key */
-#define API_KEY "AIzaSyD9eYYLfgWA2T_7Q8Oye3ws28BOzHdbgjE"
+#define API_KEY "AIzaSyDar4RogfH1TQo1tDyItTQt6_LWbHtBOD4"
 
 /* 3. Nhập Real Time Database URL */
-#define DATABASE_URL "https://test-cb7c4-default-rtdb.firebaseio.com/" //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
+#define DATABASE_URL "https://pbl5-arduino-default-rtdb.firebaseio.com" //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
 
-/* 4. Define the user Email and password that alreadey registerd or added in project */
-#define USER_EMAIL "19tclcdt1@gmail.com" // tao user
-#define USER_PASSWORD "Qwerty@1234"
+/* 4.Nhập Email và mật khẩu tương ứng khi đăng kí cơ sở dữ liệu mới trên Firebase */
+#define USER_EMAIL "admin@gmail.com" // tao user
+#define USER_PASSWORD "123456"
 
 // Khai báo các đối tượng của Firebase Data 
 FirebaseData fbdo;
-
 FirebaseAuth auth;
 FirebaseConfig configfb;
 
 unsigned long sendDataPrevMillis = 0;
-unsigned long count = 0;
 unsigned long PrevMillis = millis();
 
 //5 dòng tiếp theo là khai báo chân module L298N
 int IN1 = 12;
 int IN2 = 15;
 int IN3 = 13;
-int IN4 = 2;
+int IN4 = 14;
 
 //3 dòng tiếp theo khai báo chân của cảm biến nhiệt độ độ ẩm
-int DHTPIN = 16;       //Đọc dữ liệu từ DHT11 ở chân 2 trên mạch Arduino
+int DHTPIN = 2;       //Đọc dữ liệu từ DHT11 ở chân 2 trên mạch Arduino
 int DHTTYPE = DHT11;  //Khai báo loại cảm biến, có 2 loại là DHT11 và DHT22
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -203,85 +199,129 @@ void DungNoi()
   delay(100);
 }
 
-void XuLiQuat(int nhietdo,int chedo,int fan)
+void XuLiQuat(String chedo,float nhietdo,String fan)
 { 
-   
-if( chedo == 0){
-   Serial.println("chế độ tự động");
-   if( nhietdo >= 32)
+   const char* chedo1 = chedo.c_str();
+   const char* fan1 = fan.c_str();
+
+  if(strcmp(chedo1,"ON") == 0)
+  {
+     Serial.println("chế độ quạt tự động");
+     Serial.println(nhietdo);
+     if( nhietdo >= 32)
+      {
+        BatQuat();
+      }
+      else if(nhietdo <= 32)
+      {
+        TatQuat();
+      }
+   }
+  else if(strcmp(chedo1,"OFF") == 0) 
     {
-      BatQuat();
-    }else 
-    {
-      TatQuat();
+      Serial.println("chế độ quạt thủ công");
+      Serial.println(nhietdo);
+      if(strcmp(fan1,"ON") == 0)
+      {
+        BatQuat();
+      }
+      else if(strcmp(fan1,"OFF") == 0) 
+      {
+        TatQuat();
+      }
     }
-  }
-  else {
-    Serial.println("chế độ thủ công");
-    if(fan == 1)
-    {
-      BatQuat();
-    }else 
-    {
-      TatQuat();
-    }
-  }
 }
 
-void XuLiNoi(String camxuc)
+void XuLiNoi(String chedo,String camxuc,String cradle)
 {
+  const char* chedo1 = chedo.c_str();
   const char* camxuc1 = camxuc.c_str();
-
- if(strcmp(camxuc1,"happy") == 0)
+  const char* cradle1 = cradle.c_str();
+ 
+  if(strcmp(chedo1,"OFF") == 0) 
   {
-    Serial.println("em bé đang vui, không lắc nôi");
-    DungNoi();
+    Serial.println("chế độ nôi thủ công");
+    if(strcmp(cradle1,"ON") == 0)
+    {
+      LacNoi();
+    }
+    else if(strcmp(cradle1,"OFF") == 0) 
+    {
+      DungNoi();
+    }
+ }
+ else if(strcmp(chedo1,"ON") == 0)
+ {
+  Serial.println("chế độ nôi tự động");
+    if(strcmp(camxuc1,"Khác") == 0)
+    {
+      Serial.println("em bé không có gì bất thường");
+      DungNoi();
+    }
+    else if(strcmp(camxuc1, "Khóc") == 0)
+    {
+      Serial.println("em bé đang khóc, lắc nôi để dỗ ");
+      LacNoi();
+    }
+    else if(strcmp(camxuc1, "Ngủ") == 0)
+    {
+      Serial.println("em bé đang buồn ngủ, ru đời đi nhé");
+      LacNoi();
+    }
+    else
+    {
+      DungNoi();
+    }
   }
-  else if(strcmp(camxuc1, "cry") == 0)
-  {
-    Serial.println("em bé đang khóc, lắc nôi để dỗ ");
-    LacNoi();
-  }
-  else if(strcmp(camxuc1, "sleepy") == 0)
-  {
-    Serial.println("em bé đang buồn ngủ, ru đời đi nhé");
-    LacNoi();
-  }
-  else
-  {
-     DungNoi();
-  }
+ 
 }
 
 void loop()
 {   
-
+  String account = "trquan17"; //tên tài khoản user khi đăng nhập vào web
   if (Firebase.ready() && (millis() - sendDataPrevMillis > 3000 || sendDataPrevMillis == 0))
   {
     sendDataPrevMillis = millis();
     String str = Photo2Base64();
-    String path = "users/thanh/info/image_encode";
+    String path = "users/" + account + "/info/image_encode";
 
     // cho biết là đã gửi ảnh thành công lên firebase hay chưa
     Serial.printf("Send image... %s\n", Firebase.setString(fbdo, path, str) ? "success" : fbdo.errorReason().c_str());
   }
-  
-  // 3 dòng tiếp theo tùy theo cảm xúc mà cho lắc nôi hay ko 
-  Firebase.getString(fbdo,"emotion");
+
+  //biến chế độ
+  Firebase.getString(fbdo,"users/" + account + "/control/auto");
+  String chedo = fbdo.stringData(); 
+
+  //biến cảm xúc
+  Firebase.getString(fbdo,"users/" +account + "/info/emoji");
   String camxuc = fbdo.stringData();
-  XuLiNoi(camxuc);
+
+  //biến điều khiển bật/tắt nôi 
+  Firebase.getString(fbdo,"users/" +account + "/control/status_cradle");
+  String cradle = fbdo.stringData();
+
+  //biến điều khiển bật/tắt quạt
+  Firebase.getString(fbdo,"users/" + account + "/control/status_fan");
+  String fan = fbdo.stringData();
 
 
-  // 7 dòng tiếp theo tùy theo chế độ hoặc nhiệt độ mà cho bật tắt quạt
-  int nhietdo = dht.readTemperature(); //Đọc nhiệt độ từ cảm biến
-//  Firebase.setString(fbdo,"users/thanh/info/temperature", nhietdo); // gửi nhiệt độ lên Firebase
-  Firebase.getInt(fbdo,"chedo");
-  int chedo = fbdo.intData();
-  Firebase.getInt(fbdo,"fan");
-  int fan = fbdo.intData();
-  XuLiQuat(nhietdo,chedo,fan); 
+  ////test
+  Firebase.getInt(fbdo,"users/" + account + "/info/temp");
+  int nhietdo = fbdo.intData();
+  ////
 
+//  float doam = dht.readHumidity();    //Đọc độ ẩm
+//  float nhietdo = dht.readTemperature(); //Đọc nhiệt độ
+//  Firebase.setInt(fbdo,"users/" + account + "/info/temp",nhietdo);// gửi nhiệt độ lên Firebase
+//  Firebase.setInt(fbdo,"users/" + account + "/info/hum",doam);// gửi độ ẩm lên Firebase
 
+    
+  //dòng tiếp theo tùy theo chế độ và cảm xúc mà cho lắc nôi hay ko 
+  XuLiNoi(chedo,camxuc,cradle);
+  
+  // dòng tiếp theo tùy theo chế độ hoặc nhiệt độ mà cho bật tắt quạt
+  XuLiQuat(chedo,nhietdo,fan); 
 }
 
 String Photo2Base64() {
