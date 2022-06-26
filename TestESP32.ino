@@ -5,8 +5,7 @@
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 #include "Base64.h"
-#include "esp_camera.h"
-#include "DHT.h"    
+#include "esp_camera.h" 
 // ================
 
 //Provide the token generation process info.
@@ -19,13 +18,15 @@
 #define WIFI_SSID " "
 #define WIFI_PASSWORD " "
 
+//For the following credentials, see examples/Authentications/SignInAsUser/EmailPassword/EmailPassword.ino
+
 /* 2. Nhập API Key */
 #define API_KEY "AIzaSyDar4RogfH1TQo1tDyItTQt6_LWbHtBOD4"
 
 /* 3. Nhập Real Time Database URL */
 #define DATABASE_URL "https://pbl5-arduino-default-rtdb.firebaseio.com" //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
 
-/* 4.Nhập Email và mật khẩu tương ứng khi đăng kí cơ sở dữ liệu mới trên Firebase */
+/* 4. Define the user Email and password that alreadey registerd or added in project */
 #define USER_EMAIL "admin@gmail.com" // tao user
 #define USER_PASSWORD "123456"
 
@@ -43,10 +44,6 @@ int IN2 = 15;
 int IN3 = 13;
 int IN4 = 14;
 
-//3 dòng tiếp theo khai báo chân của cảm biến nhiệt độ độ ẩm
-int DHTPIN = 2;       //Đọc dữ liệu từ DHT11 ở chân 2 trên mạch Arduino
-int DHTTYPE = DHT11;  //Khai báo loại cảm biến, có 2 loại là DHT11 và DHT22
-DHT dht(DHTPIN, DHTTYPE);
 
 // TEST ============
 #define CAMERA_MODEL_AI_THINKER
@@ -77,8 +74,6 @@ void setup()
   pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
-  dht.begin();// Khởi động cảm biến
-
 
   Serial.begin(115200);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -169,7 +164,6 @@ void setup()
   Firebase.reconnectWiFi(true);
 
   Firebase.setDoubleDigits(5);
-  long count = 0;
 }
 
 void BatQuat()
@@ -207,12 +201,11 @@ void XuLiQuat(String chedo,float nhietdo,String fan)
   if(strcmp(chedo1,"ON") == 0)
   {
      Serial.println("chế độ quạt tự động");
-     Serial.println(nhietdo);
-     if( nhietdo >= 32)
+     if( nhietdo > 33)
       {
         BatQuat();
       }
-      else if(nhietdo <= 32)
+      else if(nhietdo <= 33)
       {
         TatQuat();
       }
@@ -220,7 +213,6 @@ void XuLiQuat(String chedo,float nhietdo,String fan)
   else if(strcmp(chedo1,"OFF") == 0) 
     {
       Serial.println("chế độ quạt thủ công");
-      Serial.println(nhietdo);
       if(strcmp(fan1,"ON") == 0)
       {
         BatQuat();
@@ -273,7 +265,6 @@ void XuLiNoi(String chedo,String camxuc,String cradle)
       DungNoi();
     }
   }
- 
 }
 
 void loop()
@@ -305,17 +296,9 @@ void loop()
   Firebase.getString(fbdo,"users/" + account + "/control/status_fan");
   String fan = fbdo.stringData();
 
-
-  ////test
+  //biến lấy nhiệt độ
   Firebase.getInt(fbdo,"users/" + account + "/info/temp");
   int nhietdo = fbdo.intData();
-  ////
-
-//  float doam = dht.readHumidity();    //Đọc độ ẩm
-//  float nhietdo = dht.readTemperature(); //Đọc nhiệt độ
-//  Firebase.setInt(fbdo,"users/" + account + "/info/temp",nhietdo);// gửi nhiệt độ lên Firebase
-//  Firebase.setInt(fbdo,"users/" + account + "/info/hum",doam);// gửi độ ẩm lên Firebase
-
     
   //dòng tiếp theo tùy theo chế độ và cảm xúc mà cho lắc nôi hay ko 
   XuLiNoi(chedo,camxuc,cradle);
