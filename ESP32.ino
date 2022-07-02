@@ -38,12 +38,6 @@ FirebaseConfig configfb;
 unsigned long sendDataPrevMillis = 0;
 unsigned long PrevMillis = millis();
 
-//5 dòng tiếp theo là khai báo chân module L298N
-int IN1 = 12;
-int IN2 = 15;
-int IN3 = 13;
-int IN4 = 14;
-
 
 // TEST ============
 #define CAMERA_MODEL_AI_THINKER
@@ -70,11 +64,7 @@ int IN4 = 14;
 
 void setup()
 {
-  pinMode(IN1, OUTPUT);
-  pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT);
-  pinMode(IN4, OUTPUT);
-
+  
   Serial.begin(115200);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Connecting to Wi-Fi");
@@ -126,12 +116,15 @@ void setup()
     config.fb_count = 1;
   }
   
+	
+  // Hàm dựng của camera	 
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) {
     delay(1000);
     ESP.restart();
   }
-
+	
+  // tùy chọn kích thước khung hình, gồm các kiểu như  // VGA|CIF|QVGA|HQVGA|QQVGA  ( UXGA? SXGA? XGA? SVGA? )
   sensor_t * s = esp_camera_sensor_get();
   s->set_framesize(s, FRAMESIZE_CIF);
   
@@ -166,106 +159,6 @@ void setup()
   Firebase.setDoubleDigits(5);
 }
 
-void BatQuat()
-{
-  digitalWrite(IN3, HIGH);
-  digitalWrite(IN4, LOW);
-  delay(100);
-}
-
-void TatQuat()
-{
-  digitalWrite(IN3, LOW);
-  digitalWrite(IN4, LOW);
-  delay(100);
-}
-void LacNoi()
-{
-  digitalWrite(IN1, HIGH);
-  digitalWrite(IN2, LOW);
-  delay(100);
-}
-
-void DungNoi()
-{
-  digitalWrite(IN1, LOW);
-  digitalWrite(IN2, LOW);
-  delay(100);
-}
-
-void XuLiQuat(String chedo,float nhietdo,String fan)
-{ 
-   const char* chedo1 = chedo.c_str();
-   const char* fan1 = fan.c_str();
-
-  if(strcmp(chedo1,"ON") == 0)
-  {
-     Serial.println("chế độ quạt tự động");
-     if( nhietdo > 33)
-      {
-        BatQuat();
-      }
-      else if(nhietdo <= 33)
-      {
-        TatQuat();
-      }
-   }
-  else if(strcmp(chedo1,"OFF") == 0) 
-    {
-      Serial.println("chế độ quạt thủ công");
-      if(strcmp(fan1,"ON") == 0)
-      {
-        BatQuat();
-      }
-      else if(strcmp(fan1,"OFF") == 0) 
-      {
-        TatQuat();
-      }
-    }
-}
-
-void XuLiNoi(String chedo,String camxuc,String cradle)
-{
-  const char* chedo1 = chedo.c_str();
-  const char* camxuc1 = camxuc.c_str();
-  const char* cradle1 = cradle.c_str();
- 
-  if(strcmp(chedo1,"OFF") == 0) 
-  {
-    Serial.println("chế độ nôi thủ công");
-    if(strcmp(cradle1,"ON") == 0)
-    {
-      LacNoi();
-    }
-    else if(strcmp(cradle1,"OFF") == 0) 
-    {
-      DungNoi();
-    }
- }
- else if(strcmp(chedo1,"ON") == 0)
- {
-  Serial.println("chế độ nôi tự động");
-    if(strcmp(camxuc1,"Khác") == 0)
-    {
-      Serial.println("em bé không có gì bất thường");
-      DungNoi();
-    }
-    else if(strcmp(camxuc1, "Khóc") == 0)
-    {
-      Serial.println("em bé đang khóc, lắc nôi để dỗ ");
-      LacNoi();
-    }
-    else if(strcmp(camxuc1, "Ngủ") == 0)
-    {
-      Serial.println("em bé đang buồn ngủ, ru đời đi nhé");
-      LacNoi();
-    }
-    else
-    {
-      DungNoi();
-    }
-  }
-}
 
 void loop()
 {   
@@ -279,32 +172,6 @@ void loop()
     // cho biết là đã gửi ảnh thành công lên firebase hay chưa
     Serial.printf("Send image... %s\n", Firebase.setString(fbdo, path, str) ? "success" : fbdo.errorReason().c_str());
   }
-
-  //biến chế độ
-  Firebase.getString(fbdo,"users/" + account + "/control/auto");
-  String chedo = fbdo.stringData(); 
-
-  //biến cảm xúc
-  Firebase.getString(fbdo,"users/" +account + "/info/emoji");
-  String camxuc = fbdo.stringData();
-
-  //biến điều khiển bật/tắt nôi 
-  Firebase.getString(fbdo,"users/" +account + "/control/status_cradle");
-  String cradle = fbdo.stringData();
-
-  //biến điều khiển bật/tắt quạt
-  Firebase.getString(fbdo,"users/" + account + "/control/status_fan");
-  String fan = fbdo.stringData();
-
-  //biến lấy nhiệt độ
-  Firebase.getInt(fbdo,"users/" + account + "/info/temp");
-  int nhietdo = fbdo.intData();
-    
-  //dòng tiếp theo tùy theo chế độ và cảm xúc mà cho lắc nôi hay ko 
-  XuLiNoi(chedo,camxuc,cradle);
-  
-  // dòng tiếp theo tùy theo chế độ hoặc nhiệt độ mà cho bật tắt quạt
-  XuLiQuat(chedo,nhietdo,fan); 
 }
 
 String Photo2Base64() {
