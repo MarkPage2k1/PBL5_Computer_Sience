@@ -10,6 +10,9 @@
 	+ Nhập  Nhập Real Time Database URL
 	+ Nhập Secret_key( vào project_settings trên firebase chọn Service acounts chọn Database secrets)
 
+*Nguồn tham khảo sơ đồ cắm mạch ESP32_cam và cài đặt board ESP32 trên Arduino
+https://www.electroniclinic.com/esp32-cam-esp32-camera-programming-using-arduino-issues-fixed/
+
 *Nguồn tham khảo cách cài đặt ESP32_cam
 https://pigirl2020.blogspot.com/2021/07/send-datacaptured-image-from.html
 
