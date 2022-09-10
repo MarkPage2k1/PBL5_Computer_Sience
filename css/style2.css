@@ -1,0 +1,93 @@
+.wapper {
+  display: block;
+  position: fixed;
+  right: 10px;
+  z-index: 999999;
+}
+.pr_top {
+  display: block;
+}
+.pr_top a {
+  display: block;
+  background: red;
+  padding: 4px;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  min-width: 150px;
+  text-align: center;
+}
+ul.tabs {
+  margin: 0;
+  padding: 0;
+  float: left;
+  list-style: none;
+  border-bottom: 1px solid #999;
+  border-left: 1px solid #999;
+  width: 302px;
+}
+ul.tabs li {
+  float: left;
+  margin: 0;
+  padding: 0;
+  height: 31px;
+  width: 150px;
+  line-height: 31px;
+  border: 1px solid #999;
+  border-left: none;
+  margin-bottom: -1px;
+  overflow: hidden;
+  position: relative;
+  background: #e0e0e0;
+}
+ul.tabs li a {
+  text-decoration: none;
+  color: #000;
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 10px;
+  border: 1px solid #fff;
+  outline: none;
+}
+ul.tabs li a:hover {
+  background: #ccc;
+}
+html ul.tabs li.active,
+html ul.tabs li.active a:hover {
+  background: #fff;
+  border-bottom: 1px solid #fff;
+}
+.tab_container {
+  border: 1px solid #999;
+  border-top: none;
+  overflow: hidden;
+  clear: both;
+  float: left;
+  width: 301px;
+  background: #000;
+  color: #fff;
+  font-size: 12px;
+}
+.tblList {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+}
+.tblList th {
+  border: 1px solid #ccc;
+  background: red;
+  color: #eaeaea;
+}
+.tblList tr td {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  text-align: center;
+}
+.tblList tr:hover td {
+  background: #363636;
+  color: red;
+}
+.tab_content {
+  padding: 2px;
+  font-size: 1.2em;
+}
